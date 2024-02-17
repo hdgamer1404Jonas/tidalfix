@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 config();
 
 const app = express();
-const PORT = 3000;
+const PORT = 3069;
 
 app.get('/track/:id', async (req, res) => {
     // check if there is an id
