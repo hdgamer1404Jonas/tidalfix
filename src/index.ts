@@ -8,6 +8,8 @@ const app = express();
 const PORT = 3069;
 const cache = new NodeCache({ stdTTL: 3600 });
 
+
+
 app.get('/track/:id', async (req, res) => {
     if (!req.params.id) {
         res.send(`
@@ -43,7 +45,7 @@ app.get('/track/:id', async (req, res) => {
     const artists = json.artists.map((artist: any) => artist.name).join(", ");
     const album = json.album.title;
     const cover = json.album.imageCover[0].url;
-    const url = json.tidalUrl;
+    const turl = json.tidalUrl;
 
     cache.set(url, `
         <html>
@@ -51,10 +53,10 @@ app.get('/track/:id', async (req, res) => {
                 <meta property="og:title" content="${title} - ${artists}">
                 <meta property="og:description" content="${album}">
                 <meta property="og:image" content="${cover}">
-                <meta property="og:url" content="${url}">
+                <meta property="og:url" content="${turl}">
             </head>
             <body>
-                <img src="${cover}" />
+            <div class="outer" style="position: fixed; display: flex; align-items: center; justify-content: center; top: 0; left: 0; height: 100%; width: 100%;"><div class="tidal-embed" style="height: 50%; width: 50%;"><iframe src="https://embed.tidal.com/tracks/${json.id}?layout=gridify" allowfullscreen="allowfullscreen" frameborder="0" style="width:50%;height:50%;min-height:50%;"></iframe></div></div>
             </body>
         </html>
     `);
@@ -65,13 +67,14 @@ app.get('/track/:id', async (req, res) => {
                 <meta property="og:title" content="${title} - ${artists}">
                 <meta property="og:description" content="${album}">
                 <meta property="og:image" content="${cover}">
-                <meta property="og:url" content="${url}">
+                <meta property="og:url" content="$t{url}">
             </head>
             <body>
-                <img src="${cover}" />
+            <div class="outer" style="position: fixed; display: flex; align-items: center; justify-content: center; top: 0; left: 0; height: 100%; width: 100%;"><div class="tidal-embed" style="height: 50%; width: 50%;"><iframe src="https://embed.tidal.com/tracks/${json.id}?layout=gridify" allowfullscreen="allowfullscreen" frameborder="0" style="width:50%;height:50%;min-height:50%;"></iframe></div></div>
             </body>
         </html>
     `);
+
     }).catch((error) => {
         res.send(`
             <html>
@@ -122,17 +125,17 @@ app.get('/album/:id', async (req, res) => {
         const title = json.title;
         const artists = json.artists.map((artist: any) => artist.name).join(", ");
         const cover = json.imageCover[0].url;
-        const url = json.tidalUrl;
+        const turl = json.tidalUrl;
         
         cache.set(url, `
             <html>
                 <head>
                     <meta property="og:title" content="${title} - ${artists}">
                     <meta property="og:image" content="${cover}">
-                    <meta property="og:url" content="${url}">
+                    <meta property="og:url" content="${turl}">
                 </head>
                 <body>
-                    <img src="${cover}" />
+                <div class="outer" style="position: fixed; display: flex; align-items: center; justify-content: center; top: 0; left: 0; height: 100%; width: 100%;"><div class="tidal-embed" style="height: 50%; width: 50%;"><iframe src="https://embed.tidal.com/albums/${json.id}?layout=gridify" allowfullscreen="allowfullscreen" frameborder="0" style="width:50%;height:50%;min-height:50%;"></iframe></div></div>
                 </body>
             </html>
         `);
@@ -142,13 +145,14 @@ app.get('/album/:id', async (req, res) => {
                 <head>
                     <meta property="og:title" content="${title} - ${artists}">
                     <meta property="og:image" content="${cover}">
-                    <meta property="og:url" content="${url}">
+                    <meta property="og:url" content="${turl}">
                 </head>
                 <body>
-                    <img src="${cover}" />
+                <div class="outer" style="position: fixed; display: flex; align-items: center; justify-content: center; top: 0; left: 0; height: 100%; width: 100%;"><div class="tidal-embed" style="height: 50%; width: 50%;"><iframe src="https://embed.tidal.com/albums/${json.id}?layout=gridify" allowfullscreen="allowfullscreen" frameborder="0" style="width:50%;height:50%;min-height:50%;"></iframe></div></div>
                 </body>
             </html>
         `);
+
     }).catch((error) => {
         res.send(`
             <html>
@@ -198,20 +202,34 @@ app.get('/artist/:id', async (req, res) => {
         const json = response.data.resource;
         const name = json.name;
         const cover = json.picture[0].url;
-        const url = json.tidalUrl;
+        const turl = json.tidalUrl;
+        
+        cache.set(url, `
+            <html>
+                <head>
+                    <meta property="og:title" content="${name}">
+                    <meta property="og:image" content="${cover}">
+                    <meta property="og:url" content="${turl}">
+                </head>
+                <body>
+                <div class="outer" style="position: fixed; display: flex; align-items: center; justify-content: center; top: 0; left: 0; height: 100%; width: 100%;"><div class="tidal-embed" style="height: 50%; width: 50%;"><iframe src="https://embed.tidal.com/artists/${json.id}?layout=gridify" allowfullscreen="allowfullscreen" frameborder="0" style="width:50%;height:50%;min-height:50%;"></iframe></div></div>
+                </body>
+            </html>
+        `);
 
         res.send(`
             <html>
                 <head>
                     <meta property="og:title" content="${name}">
                     <meta property="og:image" content="${cover}">
-                    <meta property="og:url" content="${url}">
+                    <meta property="og:url" content="${turl}">
                 </head>
                 <body>
-                    <img src="${cover}" />
+                <div class="outer" style="position: fixed; display: flex; align-items: center; justify-content: center; top: 0; left: 0; height: 100%; width: 100%;"><div class="tidal-embed" style="height: 50%; width: 50%;"><iframe src="https://embed.tidal.com/artists/${json.id}?layout=gridify" allowfullscreen="allowfullscreen" frameborder="0" style="width:50%;height:50%;min-height:50%;"></iframe></div></div>
                 </body>
             </html>
         `);
+
     }).catch((error) => {
         res.send(`
             <html>
@@ -262,17 +280,17 @@ app.get('/video/:id', async (req, res) => {
         const title = json.title;
         const artists = json.artists.map((artist: any) => artist.name).join(", ");
         const cover = json.image[0].url;
-        const url = json.tidalUrl;
+        const turl = json.tidalUrl;
         
         cache.set(url, `
             <html>
                 <head>
                     <meta property="og:title" content="${title} - ${artists}">
                     <meta property="og:image" content="${cover}">
-                    <meta property="og:url" content="${url}">
+                    <meta property="og:url" content="${turl}">
                 </head>
                 <body>
-                    <img src="${cover}" />
+                <div class="outer" style="position: fixed; display: flex; align-items: center; justify-content: center; top: 0; left: 0; height: 100%; width: 100%;"><div class="tidal-embed" style="height: 50%; width: 50%;"><iframe src="https://embed.tidal.com/videos/${json.id}?layout=gridify" allowfullscreen="allowfullscreen" frameborder="0" style="width:50%;height:50%;min-height:50%;"></iframe></div></div>
                 </body>
             </html>
         `);
@@ -282,13 +300,14 @@ app.get('/video/:id', async (req, res) => {
                 <head>
                     <meta property="og:title" content="${title} - ${artists}">
                     <meta property="og:image" content="${cover}">
-                    <meta property="og:url" content="${url}">
+                    <meta property="og:url" content="${turl}">
                 </head>
                 <body>
-                    <img src="${cover}" />
+                <div class="outer" style="position: fixed; display: flex; align-items: center; justify-content: center; top: 0; left: 0; height: 100%; width: 100%;"><div class="tidal-embed" style="height: 50%; width: 50%;"><iframe src="https://embed.tidal.com/videos/${json.id}?layout=gridify" allowfullscreen="allowfullscreen" frameborder="0" style="width:50%;height:50%;min-height:50%;"></iframe></div></div>
                 </body>
             </html>
         `);
+
     }).catch((error) => {
         res.send(`
             <html>
