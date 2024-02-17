@@ -7,7 +7,6 @@ const app = express();
 const PORT = 3069;
 
 app.get('/track/:id', async (req, res) => {
-    // check if there is an id
     if (!req.params.id) {
         res.send(`
             <html>
@@ -21,7 +20,6 @@ app.get('/track/:id', async (req, res) => {
         return;
     }
 
-    // get the response from the tidal api and check if theres an error
     const response = await axios.get(`https://openapi.tidal.com/tracks/${req.params.id}`, {
         params: { countryCode: 'DE' },
         headers: {
@@ -30,9 +28,7 @@ app.get('/track/:id', async (req, res) => {
             'Content-Type': 'application/vnd.tidal.v1+json'
         }
     }).then((response) => {
-        // @ts-ignore
     const json = response.data.resource;
-
     const title = json.title;
     const artists = json.artists.map((artist: any) => artist.name).join(", ");
     const album = json.album.title;
@@ -63,6 +59,7 @@ app.get('/track/:id', async (req, res) => {
                 </body>
             </html>
         `);
+        console.log(error);
         return;
     });
 });
@@ -89,9 +86,7 @@ app.get('/album/:id', async (req, res) => {
             'Content-Type': 'application/vnd.tidal.v1+json'
         }
     }).then((response) => {
-        // @ts-ignore
         const json = response.data.resource;
-
         const title = json.title;
         const artists = json.artists.map((artist: any) => artist.name).join(", ");
         const cover = json.imageCover[0].url;
@@ -120,6 +115,7 @@ app.get('/album/:id', async (req, res) => {
                 </body>
             </html>
         `);
+        console.log(error);
         return;
     });
 });
@@ -146,9 +142,7 @@ app.get('/artist/:id', async (req, res) => {
             'Content-Type': 'application/vnd.tidal.v1+json'
         }
     }).then((response) => {
-        // @ts-ignore
         const json = response.data.resource;
-
         const name = json.name;
         const cover = json.picture[0].url;
         const url = json.tidalUrl;
@@ -176,6 +170,7 @@ app.get('/artist/:id', async (req, res) => {
                 </body>
             </html>
         `);
+        console.log(error);
         return;
     });
 });
@@ -202,9 +197,7 @@ app.get('/video/:id', async (req, res) => {
             'Content-Type': 'application/vnd.tidal.v1+json'
         }
     }).then((response) => {
-        // @ts-ignore
         const json = response.data.resource;
-
         const title = json.title;
         const artists = json.artists.map((artist: any) => artist.name).join(", ");
         const cover = json.image[0].url;
@@ -233,6 +226,7 @@ app.get('/video/:id', async (req, res) => {
                 </body>
             </html>
         `);
+        console.log(error);
         return;
     });
 });
