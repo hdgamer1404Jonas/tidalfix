@@ -14,11 +14,33 @@ app.on('ready', () => {
   setInterval(() => {
     const clipboardText = clipboard.readText();
     if (clipboardText && clipboardText.startsWith('https://tidal.com/')) {
-      let redirectedLink = clipboardText.replace(
-        /https:\/\/tidal\.com\/(browse\/track|browse\/album|browse\/artist|browse\/video)\/(\w+)/,
-        'https://tidal.jnwh.tech/$2'
-      );
-      clipboard.writeText(redirectedLink);
+      const args = clipboardText.split('/');
+      if (!args[4]) return;
+      if (!args[5]) return;
+
+      switch (args[4]) {
+        case "track": {
+          clipboard.writeText("https://tidal.jnwh.tech/track/" + args[5]);
+          break;
+        }
+
+        case "artist": {
+          clipboard.writeText("https://tidal.jnwh.tech/artist/" + args[5]);
+          break;
+        }
+
+        case "album": {
+          clipboard.writeText("https://tidal.jnwh.tech/album/" + args[5]);
+          break;
+        }
+
+        case "video": {
+          clipboard.writeText("https://tidal.jnwh.tech/video/" + args[5]);
+          break;
+        }
+
+        default: return;
+      }
     }
   }, 1000);
 });
